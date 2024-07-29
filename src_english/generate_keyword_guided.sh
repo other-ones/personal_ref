@@ -19,13 +19,12 @@ accelerate launch --main_process_port 1985 --num_processes=3 --gpu_ids=4,5,6 --m
 --use_xformers \
 --local_rank=0 \
 --resume_unet_ckpt_path='../weights/english/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME/unet_weight_s50001.pt' \
---output_dir="../generated/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_s50K_NOSKIP_attnmod_pos05_neg0_suffix_seed7777" \
+--output_dir="../generated/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_s50K_NOSKIP_NOSUFFIX_attnmod_pos04_neg0_seed7777" \
 --eval_batch_size=1 \
 --dbname="mario_eval2" \
 --instance_data_root='/data/twkim/diffusion/ocr-dataset/' \
 --num_inference_steps=100 \
---lora_rank=32 --seed=7777 --guidance_scale=7.5 --treg_pos=0.5 --treg_neg=0 \
---include_suffix
+--lora_rank=32 --seed=7777 --guidance_scale=7.5 --treg_pos=0.3 --treg_neg=0 
 
 export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;
 accelerate launch --main_process_port 1986 --num_processes=3 --gpu_ids=4,5,6 --mixed_precision no  generate_rd_keyword_guided.py \
