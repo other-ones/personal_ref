@@ -1,5 +1,5 @@
 export PYTHONPATH=$PWD;
-accelerate launch --main_process_port 9971 --num_processes=3 --gpu_ids=0,1 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
+accelerate launch --main_process_port 9971 --num_processes=2 --gpu_ids=0,1 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
 --local_rank=0 \

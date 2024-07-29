@@ -56,8 +56,8 @@ from lora_diffusion import tune_lora_scale, patch_pipe
 import torchvision.transforms as T
 import inspect
 
-from azureml.core import Run
-run = Run.get_context()
+# from azureml.core import Run
+# run = Run.get_context()
 import socket
 hostname = socket.gethostname()
 
