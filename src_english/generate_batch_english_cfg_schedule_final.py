@@ -509,6 +509,7 @@ def main(args):
                 print('saved at', sample_dir)
                 print('STEP: {}/{} ETA:{:.4f}'.format(step+1,len(test_dataloader),(moving_avg*num_remaining)/60))
                 count+=1
+                st=time.time()
     if accelerator.is_main_process:   
         print(count,'ended')
     # meta_file.close()
