@@ -61,7 +61,7 @@ import inspect
 # run = Run.get_context()
 import socket
 hostname = socket.gethostname()
-
+hostname=hostname.lower()
 from datasets.test_dataset import TestDataset
 from config import parse_args
 from torch import nn
@@ -161,7 +161,7 @@ def main(args):
 
     if args.seed is not None:
         set_seed(args.seed)
-    if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+    if (hostname == 'ubuntu' or hostname.startswith('qlab')):
         # Output directory
         trained_model_name=args.resume_unet_ckpt_path.split('/')[-2]
         trained_model_name=trained_model_name.split('Text-')[0]
