@@ -1,16 +1,16 @@
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english;
-accelerate launch --main_process_port 9971 --num_processes=3 --gpu_ids=4,5,6 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
+export PYTHONPATH=$PWD;
+accelerate launch --main_process_port 9971 --num_processes=3 --gpu_ids=0,1 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
 --local_rank=0 \
---resume_unet_ckpt_path='../weights/english/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_seed7777_suffix/unet_weight_s50001.pt' \
---output_dir="../generated/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_CFG_DEC05_BASE4P5_CONST3" \
+--resume_unet_ckpt_path='../weights/english/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME/unet_weight_s50001.pt' \
+--output_dir="../generated/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_CFG_DEC05_BASE0P5_CONST7_NOSUFFIX" \
 --eval_batch_size=15 \
 --dbname=mario_eval2 \
 --lora_rank=32 \
 --instance_data_root='/data/twkim/diffusion/ocr-dataset/' \
---decay_rate=0.5 --base_scale=4.5 --cfg_const=3 \
---seed=7777 --include_suffix 
+--decay_rate=0.5 --base_scale=0.5 --cfg_const=7 \
+--seed=7777
 
 
 
@@ -31,11 +31,7 @@ accelerate launch --main_process_port 9971 --num_processes=3 --gpu_ids=4,5,6 --m
 
 
 
-
-
-
-
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 9961 --num_processes=1 --gpu_ids=2 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
@@ -49,7 +45,7 @@ accelerate launch --main_process_port 9961 --num_processes=1 --gpu_ids=2 --mixed
 --decay_rate=0.5 --base_scale=3.5 --cfg_const=4 \
 --seed=7777 
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 9981 --num_processes=1 --gpu_ids=3 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
@@ -64,7 +60,7 @@ accelerate launch --main_process_port 9981 --num_processes=1 --gpu_ids=3 --mixed
 --seed=7777 
 
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 1241 --num_processes=1 --gpu_ids=4 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
@@ -79,7 +75,7 @@ accelerate launch --main_process_port 1241 --num_processes=1 --gpu_ids=4 --mixed
 --seed=7777 
 
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 7712 --num_processes=1 --gpu_ids=5 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
