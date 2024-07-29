@@ -62,6 +62,7 @@ import inspect
 import socket
 hostname = socket.gethostname()
 hostname=hostname.lower()
+print(hostname,'hostname')
 from datasets.test_dataset import TestDataset
 from config import parse_args
 from torch import nn
@@ -477,7 +478,7 @@ def main(args):
                                     num_inference_steps=100,
                                     width=512, height=512, 
                                     num_images_per_prompt=1,
-                                    verbose=(hostname == 'ubuntu' or hostname.startswith('Qlab'))
+                                    verbose=True,
                                     ).images
             for img_idx,img in enumerate(image_list):
                 fname=layout_files[img_idx].split('.')[0]
@@ -489,7 +490,7 @@ def main(args):
                 rendered_whole_np=(rendered_whole_np*0.5)+0.5
                 rendered_whole_pil=Image.fromarray((rendered_whole_np[img_idx]*255).astype(np.uint8)).convert('RGB')
                 rendered_whole_pil.save(os.path.join(rendering_dir,'{}_rendering.png'.format(fname)))
-                # if not (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+                # if not (hostname == 'ubuntu' or hostname.startswith('qlab')):
                 #     run.log_image(name=str(os.path.join(sample_dir,"{}.png".format(fname))), 
                 #                 path=str(os.path.join(sample_dir, "{}.png".format(fname))), \
                 #                 description=str(os.path.join(sample_dir, "{}.png".format(fname))),
