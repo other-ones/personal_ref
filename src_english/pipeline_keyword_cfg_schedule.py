@@ -13,7 +13,7 @@ from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import (
     EXAMPLE_DOC_STRING,
     rescale_noise_cfg
 )
-from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_attend_and_excite import (
+from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_keyword_cfg_schedule import (
     AttentionStore,
     AttendExciteAttnProcessor
 )
@@ -310,7 +310,8 @@ class StableDiffusionPipelineKeywordCFGSchedule(StableDiffusionPipeline):
         text_embeddings = (
             prompt_embeds[batch_size:] if do_classifier_free_guidance else prompt_embeds #cond_input
         )
-        
+        negative_prompt_embeds,prompt_embeds=prompt_embeds.chunk(2)
+        prompt_embeds = torch.cat([negative_prompt_embeds, negative_prompt_embeds,prompt_embeds,prompt_embeds], dim=0) #neg/neg/pos/pos
         with torch.no_grad():
             with self.progress_bar(total=num_inference_steps) as progress_bar:
                 for tidx, tstep in enumerate(timesteps):

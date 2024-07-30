@@ -81,6 +81,7 @@ else:
     from .stable_diffusion import (
         CycleDiffusionPipeline,
         StableDiffusionAttendAndExcitePipeline,
+        StableDiffusionPipelineKeywordCFGSchedule,
         StableDiffusionDepth2ImgPipeline,
         StableDiffusionDiffEditPipeline,
         StableDiffusionImageVariationPipeline,

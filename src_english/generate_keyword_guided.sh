@@ -1,5 +1,5 @@
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;
-accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=4 --mixed_precision no  generate_keyword_guided.py \
+export PYTHONPATH=$PWD;
+accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=7 --mixed_precision no  generate_keyword_guided.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
 --local_rank=0 \
@@ -13,7 +13,7 @@ accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=4 --mixed
 --include_suffix --debug
 
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 1985 --num_processes=3 --gpu_ids=4,5,6 --mixed_precision no  generate_rd_keyword_guided.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
@@ -26,7 +26,7 @@ accelerate launch --main_process_port 1985 --num_processes=3 --gpu_ids=4,5,6 --m
 --num_inference_steps=100 \
 --lora_rank=32 --seed=7777 --guidance_scale=7.5 --treg_pos=0.3 --treg_neg=0 
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 1986 --num_processes=3 --gpu_ids=4,5,6 --mixed_precision no  generate_rd_keyword_guided.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
@@ -40,7 +40,7 @@ accelerate launch --main_process_port 1986 --num_processes=3 --gpu_ids=4,5,6 --m
 --lora_rank=32 --seed=7777 --guidance_scale=7.5 --treg_pos=0.2 --treg_neg=0.2 \
 --include_suffix
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=7 --mixed_precision no  generate_rd_keyword_guided.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
@@ -53,7 +53,7 @@ accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=7 --mixed
 --num_inference_steps=50 \
 --lora_rank=32 --seed=7777 --guidance_scale=7.5 --treg=0.4
 
-export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;
+export PYTHONPATH=$PWD;
 accelerate launch --main_process_port 1694 --num_processes=3 --gpu_ids=1,2,7 --mixed_precision no  generate_rd_keyword_guided.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \

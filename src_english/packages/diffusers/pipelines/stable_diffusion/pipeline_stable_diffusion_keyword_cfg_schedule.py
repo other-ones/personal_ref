@@ -173,20 +173,17 @@ class AttendExciteAttnProcessor:
         query = attn.head_to_batch_dim(query)
         key = attn.head_to_batch_dim(key)
         value = attn.head_to_batch_dim(value)
-        print(hidden_states.shape,'hidden_states.shape')
-        print(query.shape,'query.shape')
-        print(key.shape,'key.shape')
-        print(value.shape,'value.shape')
+        print(hidden_states.shape,'hidden_states.shape HERE')
+        print(query.shape,'query.shape HERE')
+        print(key.shape,'key.shape HERE')
+        print(value.shape,'value.shape HERE')
         attention_probs,attention_scores = attn.get_attention_scores(query, key, attention_mask) #at attention_processors.py
 
         # Attn Modulation
         if is_cross:
             do_classifier_free_guidance=attn_mod_params["do_classifier_free_guidance"]
             num_heads=attn.heads
-            if do_classifier_free_guidance:
-                cfg_mult=2
-            else:
-                cfg_mult=1
+            
             batch_heads_mult,_,num_tokens=attention_scores.shape #(30,4096,77):(bsz*num_heads*cfg_mult)
             # batch_size=batch_heads_mult//(num_heads*cfg_mult)
             # treg_neg=attn_mod_params['treg_neg']
@@ -196,11 +193,11 @@ class AttendExciteAttnProcessor:
             pos_masks_batch=attn_mod_params["pos_masks_batch"] #bsz,77,64,64
             # neg_masks_batch=attn_mod_params["neg_masks_batch"] #bsz,77,64,64
             batch_size,num_tokens,_,_=pos_masks_batch.shape
-
-            
+            print(batch_size,'batch_size')
 
             ## SHAPES ##
             # num_heads: 5
+            # hidden_states: 4,4096,320
             # query: (20,4096,64)
             # key: (20,4096,64)
             # value: (20,4096,64)
@@ -219,86 +216,11 @@ class AttendExciteAttnProcessor:
             # SINGLEBATCH
 
 
-            # MULTIBATCH
-            # # 2,77,512,512 -> 2,77,4096 -> 2,4096,77
-            # pos_masks_batch=F.interpolate(pos_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1)
-            # pos_masks_batch=pos_masks_batch.unsqueeze(1)
-            # pos_masks_batch=pos_masks_batch.repeat(1,num_heads,1,1)
-            # pos_masks_batch = pos_masks_batch.permute(0, 1, 3, 2)
-            # # pos_masks_batch=pos_masks_batch.permute(0,2,1)
-            # # pos_masks_batch=pos_masks_batch.repeat(1,1,num_heads,1)
-            # # pos_masks_batch=pos_masks_batch.permute(0,2,1,3)
-
-            # # neg_masks_batch=F.interpolate(neg_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1)
-            # # neg_masks_batch=neg_masks_batch.permute(0,2,1)
-            # # neg_masks_batch=neg_masks_batch.repeat(1,1,num_heads,1)
-            # # neg_masks_batch=neg_masks_batch.permute(0,2,1,3)
-
-
-            # pos_masks_batch=pos_masks_batch.reshape(batch_size*num_heads,map_res**2,num_tokens)
-            # MULTIBATCH
-
-
-
-
-
-
-
-            # MULTIBATCH
-            # torch.Size([4, 4096, 320]) tensor.shape1
-            # torch.Size([4, 4096, 5, 64]) tensor.shape2
-            # torch.Size([4, 5, 4096, 64]) tensor.shape3
-            # torch.Size([20, 4096, 64]) tensor.shape3
-            # def batch_to_head_dim(self, tensor):
-
-            # 
-            # def head_to_batch_dim(self, tensor, out_dim=3):
-            #     # example: (4,4096,320) -> reshape(4,4096,5,64) -> permute(4,5,4096,64) -> reshape(20,4096,64)
-            #     head_size = self.heads
-            #     batch_size, seq_len, dim = tensor.shape
-            #     tensor = tensor.reshape(batch_size, seq_len, head_size, dim // head_size)
-            #     tensor = tensor.permute(0, 2, 1, 3)
-            #     if out_dim == 3:
-            #         tensor = tensor.reshape(batch_size * head_size, seq_len, dim // head_size)
-            #     return tensor
-
-
-            # # offset_pos: (10,4096,77)
-            # # pos_masks_batch:(2,77,512,512)
-            # # GOAL: :(2, 77, 4096)-> permute&repeat: (10,4096,77)
-            # # key:   (4,77,320) -> reshape(4,77,5,64) -> permute(4,5,77,64) -> reshape(20,77,64)
-            # # query: (4,4096,320) -> reshape(4,4096,5,64) -> permute(4,5,4096,64) -> reshape(20,4096,64)
-            # bsz,num_tokens,_,_=pos_masks_batch.shape
-            # # pos_masks_batch=pos_masks_batch.repeat(2,1,1,1) # (4,77,512,512)
-            # # pos_masks_batch=torch.repeat_interleave(pos_masks_batch,num_heads,dim=0)
-            # pos_masks_batch=F.interpolate(pos_masks_batch,size=(map_res, map_res),mode='nearest') # (4,77,64,64)
-            # pos_masks_batch=pos_masks_batch.view(bsz,num_tokens,-1) # (2,77,4096)
-            # pos_masks_batch=pos_masks_batch.permute(0,2,1) # (2,77,4096) -> # (2,4096,77)
-            # pos_masks_batch=pos_masks_batch.repeat(1,1,num_heads) # (2,4096,5*77)
-            # pos_masks_batch=pos_masks_batch.reshape(bsz,map_res**2,num_heads,num_tokens) # # (2,4096,5,77)
-            # pos_masks_batch=pos_masks_batch.permute(0, 2, 1, 3) #(2,5,4096,77)
-            # pos_masks_batch=pos_masks_batch.reshape(bsz*num_heads,map_res**2,num_tokens)
-            # pos_masks_batch=pos_masks_batch.chunk(2)[-1]
-            # MULTIBATCH
-            
-
-
-            
-            ## SHAPES ##
-            # num_heads: 5
-            # query: (20,4096,64)
-            # key: (20,4096,64)
-            # value: (20,4096,64)
-            # pos_masks_batch: (2,77,512,512)
-            # cond_scores: (10,4096,77)
-            # attention_scores: (20,4096,77)
-            ## SHAPES ##
 
             if do_classifier_free_guidance:
                 uncond_scores,cond_scores=attention_scores.chunk(2)
                 min_value=cond_scores.min(-1)[0].unsqueeze(-1).repeat(1,1,num_tokens)
                 max_value=cond_scores.max(-1)[0].unsqueeze(-1).repeat(1,1,num_tokens)
-                print(cond_scores.shape,'cond_scores.shape')
                 offset_pos=max_value-cond_scores
                 # offset_neg=cond_scores-min_value 
                 # Update scores
@@ -325,7 +247,7 @@ class AttendExciteAttnProcessor:
         return hidden_states
 
 
-class StableDiffusionAttendAndExcitePipeline(DiffusionPipeline, TextualInversionLoaderMixin):
+class StableDiffusionPipelineKeywordCFGSchedule(DiffusionPipeline, TextualInversionLoaderMixin):
     r"""
     Pipeline for text-to-image generation using Stable Diffusion and Attend and Excite.
 
@@ -1239,3 +1161,4 @@ class GaussianSmoothing(torch.nn.Module):
             filtered (torch.Tensor): Filtered output.
         """
         return self.conv(input, weight=self.weight.to(input.dtype), groups=self.groups)
+
