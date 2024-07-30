@@ -65,7 +65,7 @@ hostname = socket.gethostname()
 from datasets.test_dataset_keyword import TestDataset
 from config import parse_args
 from torch import nn
-from src_english.pipeline_keyword_cfg_schedule import StableDiffusionPipelineKeywordCFGSchedule
+from pipeline_keyword_cfg_schedule import StableDiffusionPipelineKeywordCFGSchedule
 
 
 image_transforms = transforms.Compose(
@@ -491,7 +491,7 @@ def main(args):
                 fname=layout_files[img_idx].split('.')[0]
                 eot_idxs=eot_idxs_batch[img_idx]
                 prompt=prompt_batch[img_idx]
-                ids = keygen_pipeline.tokenizer(prompt).input_ids
+                ids = pipeline.tokenizer(prompt).input_ids
                 ids=tokenizer.pad(
                     {"input_ids": ids},
                     padding="max_length",
@@ -499,7 +499,7 @@ def main(args):
                     # return_tensors="pt",
                 ).input_ids
                 indices = {i: tok 
-                    for tok, i in zip(keygen_pipeline.tokenizer.convert_ids_to_tokens(ids), range(len(ids)))
+                    for tok, i in zip(pipeline.tokenizer.convert_ids_to_tokens(ids), range(len(ids)))
                 }
 
                 if (hostname == 'ubuntu' or hostname.startswith('Qlab')):

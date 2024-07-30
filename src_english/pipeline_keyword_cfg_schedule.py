@@ -13,7 +13,7 @@ from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import (
     EXAMPLE_DOC_STRING,
     rescale_noise_cfg
 )
-from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_attend_and_excite import (
+from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_keyword_cfg_schedule import (
     AttentionStore,
     AttendExciteAttnProcessor
 )
@@ -310,26 +310,17 @@ class StableDiffusionPipelineKeywordCFGSchedule(StableDiffusionPipeline):
         text_embeddings = (
             prompt_embeds[batch_size:] if do_classifier_free_guidance else prompt_embeds #cond_input
         )
-        
+        negative_prompt_embeds,prompt_embeds=prompt_embeds.chunk(2)
+        prompt_embeds = torch.cat([negative_prompt_embeds, negative_prompt_embeds,prompt_embeds,prompt_embeds], dim=0) #neg/neg/pos/pos
         with torch.no_grad():
             with self.progress_bar(total=num_inference_steps) as progress_bar:
                 for tidx, tstep in enumerate(timesteps):
                     # expand the latents if we are doing classifier free guidance
-                    latent_model_input = (
-                        torch.cat([latents] * 2) if do_classifier_free_guidance else latents
-                    )
-
+                    latent_model_input = (torch.cat([latents] * 4) if do_classifier_free_guidance else latents)
                     latent_model_input = self.scheduler.scale_model_input(latent_model_input, tstep)
+                    
                     # print(latent_model_input.shape,'latent_model_input.shap1
                     if do_classifier_free_guidance:
-                        # latent_model_input = torch.cat([latent_model_input, 
-                        #                                 mask_tensors.repeat(2,1,1,1), 
-                        #                                 render_embs.repeat(2,1,1,1)], dim=1)
-                        # latent_model_input[:(batch_size), 4:, :, :] *= 0.0 #uncond/cond
-
-
-
-                        
                         # # # # # # # 
                         # Latent Repeating
                         # 0:4 latent

@@ -45,6 +45,7 @@ else:
     from .pipeline_cycle_diffusion import CycleDiffusionPipeline
     from .pipeline_stable_diffusion import StableDiffusionPipeline
     from .pipeline_stable_diffusion_sd import StableDiffusionPipelineSD
+    from .pipeline_stable_diffusion_keyword_cfg_schedule import StableDiffusionPipelineKeywordCFGSchedule
     from .pipeline_stable_diffusion_scheduled_cfg2 import StableDiffusionPipelineScheduledCFG2
     from .pipeline_stable_diffusion_scheduled_cfg1 import StableDiffusionPipelineScheduledCFG1
     from .pipeline_stable_diffusion_edit import StableDiffusionPipelineEdit
