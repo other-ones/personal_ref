@@ -173,10 +173,6 @@ class AttendExciteAttnProcessor:
         query = attn.head_to_batch_dim(query)
         key = attn.head_to_batch_dim(key)
         value = attn.head_to_batch_dim(value)
-        print(hidden_states.shape,'hidden_states.shape')
-        print(query.shape,'query.shape')
-        print(key.shape,'key.shape')
-        print(value.shape,'value.shape')
         attention_probs,attention_scores = attn.get_attention_scores(query, key, attention_mask) #at attention_processors.py
 
         # Attn Modulation
@@ -298,12 +294,10 @@ class AttendExciteAttnProcessor:
                 uncond_scores,cond_scores=attention_scores.chunk(2)
                 min_value=cond_scores.min(-1)[0].unsqueeze(-1).repeat(1,1,num_tokens)
                 max_value=cond_scores.max(-1)[0].unsqueeze(-1).repeat(1,1,num_tokens)
-                print(cond_scores.shape,'cond_scores.shape')
                 offset_pos=max_value-cond_scores
                 # offset_neg=cond_scores-min_value 
                 # Update scores
                 if treg_pos:
-                    print(offset_pos.shape,'offset_pos.shape')
                     cond_scores=cond_scores+((offset_pos*(pos_masks_batch>0))*(treg_pos))
                     # cond_scores=cond_scores-(offset_neg*(~(pos_masks_batch>0))*(treg))
                     # cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg))
