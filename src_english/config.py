@@ -8,6 +8,7 @@ from lora_diffusion import (
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(description="Simple example of a training script.")
     # Added
+    parser.add_argument('--target_file', type=str)
     parser.add_argument('--num_inference_steps', default=100,type=int)
     parser.add_argument('--num_intervention_steps', default=20,type=int)
     parser.add_argument('--treg_pos', default=0,type=float)

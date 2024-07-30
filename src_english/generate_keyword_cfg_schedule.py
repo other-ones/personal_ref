@@ -60,7 +60,7 @@ import inspect
 # from azureml.core import Run
 # run = Run.get_context()
 import socket
-hostname = socket.gethostname()
+hostname = socket.gethostname().lower()
 
 from datasets.test_dataset_keyword import TestDataset
 from config import parse_args
@@ -89,7 +89,7 @@ def main(args):
     p2idx = {p: idx for idx, p in enumerate(letters)}
     idx2p = {idx: p for idx, p in enumerate(letters)}
     model_name = args.pretrained_model_name_or_path#'stabilityai/stable-diffusion-2-1'
-    # if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+    # if (hostname == 'ubuntu' or hostname.startswith('qlab')):
     #     verbose=True
     # else:
     #     verbose=False
@@ -115,7 +115,7 @@ def main(args):
 
     if args.seed is not None:
         set_seed(args.seed)
-    if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+    if (hostname == 'ubuntu' or hostname.startswith('qlab')):
         # Output directory
         trained_model_name=args.resume_unet_ckpt_path.split('/')[-2]
         trained_model_name=trained_model_name.split('Text-')[0]
@@ -439,9 +439,9 @@ def main(args):
                 "treg_pos":args.treg_pos,
                 "treg_neg":args.treg_neg,
             }
-            print(render_embs.shape,'render_embs.shape')
-            print(mask_tensors.shape,'mask_tensors.shape')
-            print(len(prompt_batch),'len(prompt_batch)')
+            # print(render_embs.shape,'render_embs.shape')
+            # print(mask_tensors.shape,'mask_tensors.shape')
+            # print(len(prompt_batch),'len(prompt_batch)')
             num_copy=1
 
             g_schedule1=(np.linspace(1,0,100)**(args.decay_rate))*(args.base_scale) # ref - decreasing base_scale->0 : w_r in paper
@@ -482,7 +482,6 @@ def main(args):
             neg_masks_batch = neg_masks_batch.detach().cpu().float().numpy()
             rendered_whole_np=(rendered_whole_np*0.5)+0.5
             for img_idx,img in enumerate(image_list):
-                randnum='{:06d}'.format(np.random.randint(0,1e6))
                 # attention map visualization
                 pos_masks=pos_masks_batch[img_idx] #(3,77,16,16)->(77,16,16) (list of list)
                 neg_masks=neg_masks_batch[img_idx] #(3,77,16,16)->(77,16,16) (list of list)
@@ -502,7 +501,7 @@ def main(args):
                     for tok, i in zip(pipeline.tokenizer.convert_ids_to_tokens(ids), range(len(ids)))
                 }
 
-                if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+                if (hostname == 'ubuntu' or hostname.startswith('qlab')):
                     for kidx in range(len(is_keywords)):
                         if kidx>eot_idxs:
                             break
@@ -517,31 +516,31 @@ def main(args):
                         pmask=pmask*255
                         nmask=nmask*255
                         attn_map=cv2.resize(attn_map,(512,512))
-                        dst_attn_dir=os.path.join(attn_dir,fname+randnum)
-                        dst_pmask_dir=os.path.join(pmask_dir,fname+randnum)
-                        dst_nmask_dir=os.path.join(nmask_dir,fname+randnum)
+                        dst_attn_dir=os.path.join(attn_dir,fname)
+                        dst_pmask_dir=os.path.join(pmask_dir,fname)
+                        dst_nmask_dir=os.path.join(nmask_dir,fname)
                         os.makedirs(dst_attn_dir,exist_ok=True)
                         os.makedirs(dst_pmask_dir,exist_ok=True)
                         os.makedirs(dst_nmask_dir,exist_ok=True)
                         
 
                         if is_keywords[kidx]:
-                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_key_{}.png'.format(fname+randnum,kidx,ktok)),attn_map)
-                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_key_{}_pmask.png'.format(fname+randnum,kidx,ktok)),pmask)
-                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_key_{}_nmask.png'.format(fname+randnum,kidx,ktok)),nmask)
+                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_key_{}.png'.format(fname,kidx,ktok)),attn_map)
+                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_key_{}_pmask.png'.format(fname,kidx,ktok)),pmask)
+                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_key_{}_nmask.png'.format(fname,kidx,ktok)),nmask)
                         else:
-                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_nonkey_{}.png'.format(fname+randnum,kidx,ktok)),attn_map)
-                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_nonkey_{}_pmask.png'.format(fname+randnum,kidx,ktok)),pmask)
-                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_nonkey_{}_nmask.png'.format(fname+randnum,kidx,ktok)),nmask)
+                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_nonkey_{}.png'.format(fname,kidx,ktok)),attn_map)
+                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_nonkey_{}_pmask.png'.format(fname,kidx,ktok)),pmask)
+                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_nonkey_{}_nmask.png'.format(fname,kidx,ktok)),nmask)
 
 
                 
-                img.save(os.path.join(sample_dir,'{}.png'.format(fname+randnum)))
-                meta_file.write('{}\t{}\n'.format(fname+randnum,prompt_batch[img_idx]))
+                img.save(os.path.join(sample_dir,'{}.png'.format(fname)))
+                meta_file.write('{}\t{}\n'.format(fname,prompt_batch[img_idx]))
                 meta_file.flush()
                 rendered_whole_pil=Image.fromarray((rendered_whole_np[img_idx]*255).astype(np.uint8)).convert('RGB')
-                rendered_whole_pil.save(os.path.join(rendering_dir,'{}_rendering.png'.format(fname+randnum)))
-                # if not (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+                rendered_whole_pil.save(os.path.join(rendering_dir,'{}_rendering.png'.format(fname)))
+                # if not (hostname == 'ubuntu' or hostname.startswith('qlab')):
                 #     run.log_image(name=str(os.path.join(sample_dir,"{}.png".format(fname))), 
                 #             path=str(os.path.join(sample_dir, "{}.png".format(fname))), \
                 #             description=str(os.path.join(sample_dir, "{}.png".format(fname))),

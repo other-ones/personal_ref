@@ -10,7 +10,7 @@ accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=7 --mixed
 --instance_data_root='/data/twkim/diffusion/ocr-dataset/' \
 --num_inference_steps=25 \
 --lora_rank=32 --seed=12324 --guidance_scale=7.5 --treg_pos=0.5 \
---decay_rate=0.5 --base_scale=4.5 --cfg_const=3 \
+--decay_rate=0.5 --base_scale=0.5 --cfg_const=7 \
 --include_suffix --debug
 
 export PYTHONPATH=/home/twkim/project/azure/ConditionalT2IWithReferenceGuidance/src_english/;

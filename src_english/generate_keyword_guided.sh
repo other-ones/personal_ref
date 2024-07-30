@@ -9,8 +9,8 @@ accelerate launch --main_process_port 1986 --num_processes=1 --gpu_ids=7 --mixed
 --dbname="mario_eval2" \
 --instance_data_root='/data/twkim/diffusion/ocr-dataset/' \
 --num_inference_steps=25 \
---lora_rank=32 --seed=1235 --guidance_scale=7.5 --treg_pos=0.5 \
---include_suffix --debug
+--lora_rank=32 --seed=7777 --guidance_scale=7.5 --treg_pos=0.5 --treg_neg=0 
+--include_suffix --debug --target_file="LAIONEval4000_1001"
 
 
 export PYTHONPATH=$PWD;

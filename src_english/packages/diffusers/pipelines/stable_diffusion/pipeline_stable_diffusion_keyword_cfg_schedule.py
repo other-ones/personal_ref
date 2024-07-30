@@ -173,10 +173,10 @@ class AttendExciteAttnProcessor:
         query = attn.head_to_batch_dim(query)
         key = attn.head_to_batch_dim(key)
         value = attn.head_to_batch_dim(value)
-        print(hidden_states.shape,'hidden_states.shape HERE')
-        print(query.shape,'query.shape HERE')
-        print(key.shape,'key.shape HERE')
-        print(value.shape,'value.shape HERE')
+        # print(hidden_states.shape,'hidden_states.shape HERE')
+        # print(query.shape,'query.shape HERE')
+        # print(key.shape,'key.shape HERE')
+        # print(value.shape,'value.shape HERE')
         attention_probs,attention_scores = attn.get_attention_scores(query, key, attention_mask) #at attention_processors.py
 
         # Attn Modulation
@@ -236,8 +236,8 @@ class AttendExciteAttnProcessor:
                     # cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg))
                 # if treg_neg:
                 #     cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg_neg))
-                print(attention_scores[(batch_size*num_heads*2):].shape,'attention_scores[(batch_size*num_heads*2):].shape')
-                print(cond_scores.shape,'cond_scores.shape')
+                # print(attention_scores[(batch_size*num_heads*2):].shape,'attention_scores[(batch_size*num_heads*2):].shape')
+                # print(cond_scores.shape,'cond_scores.shape')
                 attention_scores[(batch_size*num_heads*2):]=cond_scores
         # Attn Modulation
         

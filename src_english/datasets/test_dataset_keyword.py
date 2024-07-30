@@ -73,6 +73,7 @@ class TestDataset(Dataset):
             attnres=16,
             mask_bg=0,
             mask_fg=0,
+            target_file=None,
             # chunk_id=0
     ):
         self.mask_bg = mask_bg
@@ -117,6 +118,8 @@ class TestDataset(Dataset):
                 line_split=line.split('\t')
                 layout_file,caption=line_split
                 fname=layout_file.split('.')[0]
+                if target_file is not None and target_file not in layout_file:
+                    continue
                 saved_path=os.path.join(sample_dir,'{}.png'.format(fname))
                 if os.path.exists(saved_path):
                     continue

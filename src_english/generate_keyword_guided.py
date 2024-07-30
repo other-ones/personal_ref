@@ -59,7 +59,7 @@ import inspect
 # from azureml.core import Run
 # run = Run.get_context()
 import socket
-hostname = socket.gethostname()
+hostname = socket.gethostname().lower()
 
 from datasets.test_dataset_keyword import TestDataset
 from config import parse_args
@@ -88,7 +88,7 @@ def main(args):
     p2idx = {p: idx for idx, p in enumerate(letters)}
     idx2p = {idx: p for idx, p in enumerate(letters)}
     model_name = args.pretrained_model_name_or_path#'stabilityai/stable-diffusion-2-1'
-    # if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+    # if (hostname == 'ubuntu' or hostname.startswith('qlab')):
     #     verbose=True
     # else:
     #     verbose=False
@@ -114,7 +114,7 @@ def main(args):
 
     if args.seed is not None:
         set_seed(args.seed)
-    if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+    if (hostname == 'ubuntu' or hostname.startswith('qlab')):
         # Output directory
         trained_model_name=args.resume_unet_ckpt_path.split('/')[-2]
         trained_model_name=trained_model_name.split('Text-')[0]
@@ -255,6 +255,7 @@ def main(args):
         sample_dir=sample_dir,
         mask_bg=args.mask_bg,
         mask_fg=args.mask_fg,
+        target_file=args.target_file,
     )
 
     local_rank = accelerator.process_index
@@ -487,7 +488,7 @@ def main(args):
                     for tok, i in zip(keygen_pipeline.tokenizer.convert_ids_to_tokens(ids), range(len(ids)))
                 }
 
-                if (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+                if (hostname == 'ubuntu' or hostname.startswith('qlab')):
                     for kidx in range(len(is_keywords)):
                         if kidx>(eot_idx+1):
                             break
@@ -527,7 +528,7 @@ def main(args):
                 meta_file.flush()
                 rendered_whole_pil=Image.fromarray((rendered_whole_np[img_idx]*255).astype(np.uint8)).convert('RGB')
                 rendered_whole_pil.save(os.path.join(rendering_dir,'{}_rendering.png'.format(fname+randnum)))
-                # if not (hostname == 'ubuntu' or hostname.startswith('Qlab')):
+                # if not (hostname == 'ubuntu' or hostname.startswith('qlab')):
                 #     run.log_image(name=str(os.path.join(sample_dir,"{}.png".format(fname))), 
                 #             path=str(os.path.join(sample_dir, "{}.png".format(fname))), \
                 #             description=str(os.path.join(sample_dir, "{}.png".format(fname))),
