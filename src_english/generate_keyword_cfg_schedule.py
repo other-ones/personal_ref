@@ -65,7 +65,7 @@ hostname = socket.gethostname()
 from datasets.test_dataset_keyword import TestDataset
 from config import parse_args
 from torch import nn
-from src_english.pipeline_keyword_cfg_schedule import StableDiffusionPipelineKeywordCFGSchedule
+from pipeline_keyword_cfg_schedule import StableDiffusionPipelineKeywordCFGSchedule
 
 
 image_transforms = transforms.Compose(
