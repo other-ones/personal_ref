@@ -173,6 +173,8 @@ class AttendExciteAttnProcessor:
         query = attn.head_to_batch_dim(query)
         key = attn.head_to_batch_dim(key)
         value = attn.head_to_batch_dim(value)
+        print(query.shape,'query.shape')
+        print(key.shape,'key.shape')
         attention_probs,attention_scores = attn.get_attention_scores(query, key, attention_mask) #at attention_processors.py
 
         # Attn Modulation
@@ -184,14 +186,14 @@ class AttendExciteAttnProcessor:
             else:
                 cfg_mult=1
             batch_heads_mult,_,num_tokens=attention_scores.shape #(30,4096,77):(bsz*num_heads*cfg_mult)
-            batch_size=batch_heads_mult//(num_heads*cfg_mult)
+            # batch_size=batch_heads_mult//(num_heads*cfg_mult)
             # treg_neg=attn_mod_params['treg_neg']
             treg_pos=attn_mod_params['treg_pos']
             # load positive mask
             map_res=int(attention_scores.shape[1]**0.5)
             pos_masks_batch=attn_mod_params["pos_masks_batch"] #bsz,77,64,64
             # neg_masks_batch=attn_mod_params["neg_masks_batch"] #bsz,77,64,64
-            bsz,num_tokens,_,_=pos_masks_batch.shape
+            batch_size,num_tokens,_,_=pos_masks_batch.shape
 
             
 
