@@ -107,7 +107,6 @@ class TestDataset(Dataset):
                 layout_file, caption = line.split('\t')
                 output_path=os.path.join(output_dir,'samples',layout_file.replace('.txt','.png'))
                 if os.path.exists(output_path):
-                    print(output_path,'exists')
                     continue
                 # if not 'ChineseDrawText_91.txt' in line:
                 #     continue
