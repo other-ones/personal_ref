@@ -1,15 +1,15 @@
 export PYTHONPATH=$PWD;
-accelerate launch --main_process_port 9971 --num_processes=3 --gpu_ids=5,6,7 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
+accelerate launch --main_process_port 9971 --num_processes=2 --gpu_ids=0,1 --mixed_precision no  generate_batch_english_cfg_schedule_final.py \
 --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-1" \
 --use_xformers \
 --local_rank=0 \
 --resume_unet_ckpt_path='../weights/english/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME/unet_weight_s50001.pt' \
---output_dir="../generated/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_CFG_DEC05_BASE4P5_CONST3_NOSUFFIX" \
+--output_dir="../generated/LAIONFT_PEXEL8_L2_LORA32_SUFFIX_RECRESUME_CFG_DEC05_BASE0P5_CONST7_NOSUFFIX" \
 --eval_batch_size=15 \
 --dbname=mario_eval2 \
 --lora_rank=32 \
 --instance_data_root='/data/twkim/diffusion/ocr-dataset/' \
---decay_rate=0.5 --base_scale=4.5 --cfg_const=3 \
+--decay_rate=0.5 --base_scale=0.5 --cfg_const=7 \
 --seed=7777
 
 
