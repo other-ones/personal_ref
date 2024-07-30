@@ -197,7 +197,7 @@ def main(args):
         os.makedirs(rendering_dir, exist_ok=True)
 
     meta_path=os.path.join(args.output_dir,'meta.txt')
-    meta_file=open(meta_path,'a+')
+    # meta_file=open(meta_path,'a+')
     
     # """original text_encoder"""
     
@@ -269,7 +269,8 @@ def main(args):
         # charset_path=args.charset_path,
         diversify_font=False,
         target_subset=args.target_subset,
-        uniform_layout=args.uniform_layout
+        uniform_layout=args.uniform_layout,
+        output_dir=args.output_dir
     )
 
     local_rank = accelerator.process_index
@@ -484,8 +485,8 @@ def main(args):
                 fname=layout_files[img_idx].split('.')[0]
                 # sample
                 img.save(os.path.join(sample_dir,'{}.png'.format(fname)))
-                meta_file.write('{}\t{}\n'.format(fname,prompt[img_idx]))
-                meta_file.flush()
+                # meta_file.write('{}\t{}\n'.format(fname,prompt[img_idx]))
+                # meta_file.flush()
                 rendered_whole_np = spatial_renderings_rgb.detach().cpu().permute(0, 2, 3, 1).float().numpy()
                 rendered_whole_np=(rendered_whole_np*0.5)+0.5
                 rendered_whole_pil=Image.fromarray((rendered_whole_np[img_idx]*255).astype(np.uint8)).convert('RGB')

@@ -68,6 +68,7 @@ class TestDataset(Dataset):
             target_subset=None,
             blank_mask=False,
             blank_ref=False,
+            output_dir=None,
             # chunk_id=0
     ):
         self.blank_ref = blank_ref
@@ -101,6 +102,12 @@ class TestDataset(Dataset):
             self.caption_lines=[]
             for line in caption_lines:
                 if 'spanish_' in line  and '.txt' in line:
+                    continue
+                splits=line.split('\t')
+                layout_file, caption = line.split('\t')
+                output_path=os.path.join(output_dir,'samples',layout_file.replace('.txt','.png'))
+                if os.path.exists(output_path):
+                    print(output_path,'exists')
                     continue
                 # if not 'ChineseDrawText_91.txt' in line:
                 #     continue
