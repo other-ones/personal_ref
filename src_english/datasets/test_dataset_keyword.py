@@ -113,12 +113,13 @@ class TestDataset(Dataset):
             caption_lines=f.readlines()
             np.random.shuffle(caption_lines)
             self.caption_lines=[]
-            caption_lines=[caption_lines[0]]*100
+            # caption_lines=[caption_lines[0]]*100
             for line in caption_lines[:]:
                 line_split=line.split('\t')
                 layout_file,caption=line_split
                 fname=layout_file.split('.')[0]
-                if target_file is not None and target_file not in layout_file:
+                print(target_file,'target_file',fname,'fname')
+                if (target_file is not None) and (target_file not in fname):
                     continue
                 saved_path=os.path.join(sample_dir,'{}.png'.format(fname))
                 if os.path.exists(saved_path):
