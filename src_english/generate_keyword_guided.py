@@ -468,7 +468,7 @@ def main(args):
             neg_masks_batch = neg_masks_batch.detach().cpu().float().numpy()
             rendered_whole_np=(rendered_whole_np*0.5)+0.5
             for img_idx,img in enumerate(image_list):
-                randnum='{:06d}'.format(np.random.randint(0,1e6))
+                # randnum='{:06d}'.format(np.random.randint(0,1e6))
                 # attention map visualization
                 pos_masks=pos_masks_batch[img_idx] #(3,77,16,16)->(77,16,16) (list of list)
                 neg_masks=neg_masks_batch[img_idx] #(3,77,16,16)->(77,16,16) (list of list)
@@ -504,30 +504,30 @@ def main(args):
                         pmask=pmask*255
                         nmask=nmask*255
                         attn_map=cv2.resize(attn_map,(512,512))
-                        dst_attn_dir=os.path.join(attn_dir,fname+randnum)
-                        dst_pmask_dir=os.path.join(pmask_dir,fname+randnum)
-                        dst_nmask_dir=os.path.join(nmask_dir,fname+randnum)
+                        dst_attn_dir=os.path.join(attn_dir,fname)
+                        dst_pmask_dir=os.path.join(pmask_dir,fname)
+                        dst_nmask_dir=os.path.join(nmask_dir,fname)
                         os.makedirs(dst_attn_dir,exist_ok=True)
                         os.makedirs(dst_pmask_dir,exist_ok=True)
                         os.makedirs(dst_nmask_dir,exist_ok=True)
                         
 
                         if is_keywords[kidx]:
-                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_key_{}.png'.format(fname+randnum,kidx,ktok)),attn_map)
-                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_key_{}_pmask.png'.format(fname+randnum,kidx,ktok)),pmask)
-                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_key_{}_nmask.png'.format(fname+randnum,kidx,ktok)),nmask)
+                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_key_{}.png'.format(fname,kidx,ktok)),attn_map)
+                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_key_{}_pmask.png'.format(fname,kidx,ktok)),pmask)
+                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_key_{}_nmask.png'.format(fname,kidx,ktok)),nmask)
                         else:
-                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_nonkey_{}.png'.format(fname+randnum,kidx,ktok)),attn_map)
-                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_nonkey_{}_pmask.png'.format(fname+randnum,kidx,ktok)),pmask)
-                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_nonkey_{}_nmask.png'.format(fname+randnum,kidx,ktok)),nmask)
+                            cv2.imwrite(os.path.join(dst_attn_dir,'{}_{:02d}_nonkey_{}.png'.format(fname,kidx,ktok)),attn_map)
+                            cv2.imwrite(os.path.join(dst_pmask_dir,'{}_{:02d}_nonkey_{}_pmask.png'.format(fname,kidx,ktok)),pmask)
+                            cv2.imwrite(os.path.join(dst_nmask_dir,'{}_{:02d}_nonkey_{}_nmask.png'.format(fname,kidx,ktok)),nmask)
 
 
                 
-                img.save(os.path.join(sample_dir,'{}.png'.format(fname+randnum)))
-                meta_file.write('{}\t{}\n'.format(fname+randnum,prompt_batch[img_idx]))
+                img.save(os.path.join(sample_dir,'{}.png'.format(fname)))
+                meta_file.write('{}\t{}\n'.format(fname,prompt_batch[img_idx]))
                 meta_file.flush()
                 rendered_whole_pil=Image.fromarray((rendered_whole_np[img_idx]*255).astype(np.uint8)).convert('RGB')
-                rendered_whole_pil.save(os.path.join(rendering_dir,'{}_rendering.png'.format(fname+randnum)))
+                rendered_whole_pil.save(os.path.join(rendering_dir,'{}_rendering.png'.format(fname)))
                 # if not (hostname == 'ubuntu' or hostname.startswith('qlab')):
                 #     run.log_image(name=str(os.path.join(sample_dir,"{}.png".format(fname))), 
                 #             path=str(os.path.join(sample_dir, "{}.png".format(fname))), \
@@ -544,8 +544,8 @@ def main(args):
                 num_remaining=len(test_dataloader)-(step+1)
                 print('saved at', sample_dir)
                 print('STEP: {}/{} ETA:{:.4f} (minutes)'.format(step+1,len(test_dataloader),(moving_avg_delay*num_remaining)/60))
-                if args.debug:
-                    break
+            if args.debug:
+                break
 
     if accelerator.is_main_process:   
         print(count,'ended')
