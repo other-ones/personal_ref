@@ -118,7 +118,6 @@ class TestDataset(Dataset):
                     if (self.target_subset not in fname):
                         continue
                 self.caption_lines.append(line)
-            exit()
             print(len(self.caption_lines),'len(self.caption_lines)')
             self.num_instance_images+=len(self.caption_lines)
 

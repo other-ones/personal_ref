@@ -269,7 +269,8 @@ def main(args):
         # charset_path=args.charset_path,
         diversify_font=False,
         target_subset=args.target_subset,
-        uniform_layout=args.uniform_layout
+        uniform_layout=args.uniform_layout,
+        output_dir=args.output_dir
     )
 
     local_rank = accelerator.process_index
