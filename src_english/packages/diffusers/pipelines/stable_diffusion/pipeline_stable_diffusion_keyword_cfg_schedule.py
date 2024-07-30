@@ -193,24 +193,30 @@ class AttendExciteAttnProcessor:
             pos_masks_batch=attn_mod_params["pos_masks_batch"] #bsz,77,64,64
             # neg_masks_batch=attn_mod_params["neg_masks_batch"] #bsz,77,64,64
             batch_size,num_tokens,_,_=pos_masks_batch.shape
-            print(batch_size,'batch_size')
 
-            ## SHAPES ##
-            # num_heads: 5
-            # hidden_states: 4,4096,320
-            # query: (20,4096,64)
-            # key: (20,4096,64)
-            # value: (20,4096,64)
-            # pos_masks_batch: (2,77,512,512)
+
+
+            # SHAPES w/o CFG Schdule
+            # num_heads:5
+            # cond_scores: (5,4096,77)
+            # hidden_states: 2,4096,320
+            # query: (10,4096,64)
+            # key: (10,4096,64)
+            # value: (10,4096,64)
+
+
+             # SHAPES w/ CFG Schdule
+            # num_heads:5
             # cond_scores: (10,4096,77)
-            ## SHAPES ##
-
-
+            # hidden_states: (4,4096,320)
+            # query: (20,4096,64)
+            # key:   (20,4096,64)
+            # value: (20,4096,64)
 
             # SINGLEBATCH
             # 2,77,512,512 -> 2,77,4096 -> 2,4096,77 -> 2*num_heads,4096,77
             pos_masks_batch=F.interpolate(pos_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1).permute(0,2,1)
-            pos_masks_batch=torch.repeat_interleave(pos_masks_batch,num_heads,dim=0)
+            pos_masks_batch=torch.repeat_interleave(pos_masks_batch,num_heads*2,dim=0)
             # neg_masks_batch=F.interpolate(neg_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1).permute(0,2,1)
             # neg_masks_batch=torch.repeat_interleave(neg_masks_batch,num_heads,dim=0)
             # SINGLEBATCH
@@ -225,13 +231,14 @@ class AttendExciteAttnProcessor:
                 # offset_neg=cond_scores-min_value 
                 # Update scores
                 if treg_pos:
-                    print(offset_pos.shape,'offset_pos.shape')
                     cond_scores=cond_scores+((offset_pos*(pos_masks_batch>0))*(treg_pos))
                     # cond_scores=cond_scores-(offset_neg*(~(pos_masks_batch>0))*(treg))
                     # cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg))
                 # if treg_neg:
                 #     cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg_neg))
-                attention_scores[(batch_size*num_heads):]=cond_scores
+                print(attention_scores[(batch_size*num_heads*2):].shape,'attention_scores[(batch_size*num_heads*2):].shape')
+                print(cond_scores.shape,'cond_scores.shape')
+                attention_scores[(batch_size*num_heads*2):]=cond_scores
         # Attn Modulation
         
 
