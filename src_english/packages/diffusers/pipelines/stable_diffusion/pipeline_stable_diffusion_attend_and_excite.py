@@ -291,6 +291,9 @@ class AttendExciteAttnProcessor:
             # cond_scores: (10,4096,77)
             # attention_scores: (20,4096,77)
             ## SHAPES ##
+            # print(query.shape,'query.shape')
+            # print(key.shape,'key.shape')
+            # print(value.shape,'value.shape')
 
             if do_classifier_free_guidance:
                 uncond_scores,cond_scores=attention_scores.chunk(2)
@@ -313,6 +316,12 @@ class AttendExciteAttnProcessor:
         attention_probs=attention_scores.softmax(dim=-1)
         self.attnstore(attention_probs, is_cross, self.place_in_unet)
         hidden_states = torch.bmm(attention_probs, value)
+        # if is_cross:
+        #     print(attention_probs.shape,'attention_probs.shape')
+        #     print(value.shape,'value.shape')
+        #     print(hidden_states.shape,'hidden_states.shape')
+        #     exit()
+
         hidden_states = attn.batch_to_head_dim(hidden_states)
         # linear proj
         hidden_states = attn.to_out[0](hidden_states)

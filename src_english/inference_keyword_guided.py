@@ -384,7 +384,8 @@ def main(args):
     with torch.no_grad():
         keywords_list=['red','apple']
         # caption="a dog holding a paper saying {}".format(' '.join(keywords_list))
-        caption="a dog holding a tree engraved with {}".format(' '.join(keywords_list))
+        # caption="words saying {} engraved on the tree".format(' '.join(keywords_list))
+        caption="a sign saying {}".format(' '.join(keywords_list))
         # caption="words saying {} printed on the package".format(keywords_list[0],keywords_list[1])
         prompt_batch=[caption]
         text_boxes=np.array([[100,200,220,260],
@@ -585,9 +586,12 @@ def main(args):
 
             if (hostname == 'ubuntu' or hostname.startswith('qlab')):
                 for kidx in range(len(is_keywords)):
-                    if kidx>(eot_idx+1):
+                    if kidx>(eot_idx):
                         break
+                
                     ktok=indices[kidx].replace('</w>','')
+                    print(indices[kidx])
+
                     ktok=ktok.replace('<|startoftext|>','[SOS]')
                     ktok=ktok.replace('<|endoftext|>','[EOS]')
 
