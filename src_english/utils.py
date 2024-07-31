@@ -67,8 +67,8 @@ def generate_pos_neg_masks(height, width,
             # the it's corresponding negative mask is background_mask
             # i.e., (1-fg_mask)
             # neg_mask_list[tidx]=fg_mask #non-keyword's negative mask is fg_mask
-            pos_mask_list[tidx]=(1-fg_mask)
-            neg_mask_list[0]=fg_mask
+            # pos_mask_list[tidx]=(1-fg_mask)
+            # neg_mask_list[0]=fg_mask
             continue
 
             

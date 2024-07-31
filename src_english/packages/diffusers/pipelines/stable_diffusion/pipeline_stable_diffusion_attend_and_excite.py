@@ -185,12 +185,12 @@ class AttendExciteAttnProcessor:
                 cfg_mult=1
             batch_heads_mult,_,num_tokens=attention_scores.shape #(30,4096,77):(bsz*num_heads*cfg_mult)
             # batch_size=batch_heads_mult//(num_heads*cfg_mult)
-            # treg_neg=attn_mod_params['treg_neg']
+            treg_neg=attn_mod_params['treg_neg']
             treg_pos=attn_mod_params['treg_pos']
             # load positive mask
             map_res=int(attention_scores.shape[1]**0.5)
             pos_masks_batch=attn_mod_params["pos_masks_batch"] #bsz,77,64,64
-            # neg_masks_batch=attn_mod_params["neg_masks_batch"] #bsz,77,64,64
+            neg_masks_batch=attn_mod_params["neg_masks_batch"] #bsz,77,64,64
             batch_size,num_tokens,_,_=pos_masks_batch.shape
 
             
@@ -209,9 +209,11 @@ class AttendExciteAttnProcessor:
             # SINGLEBATCH
             # 2,77,512,512 -> 2,77,4096 -> 2,4096,77 -> 2*num_heads,4096,77
             pos_masks_batch=F.interpolate(pos_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1).permute(0,2,1)
-            pos_masks_batch=torch.repeat_interleave(pos_masks_batch,num_heads,dim=0)
-            # neg_masks_batch=F.interpolate(neg_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1).permute(0,2,1)
+            # pos_masks_batch=torch.repeat_interleave(pos_masks_batch,num_heads,dim=0)
+            pos_masks_batch=pos_masks_batch.repeat(num_heads,1,1)
+            neg_masks_batch=F.interpolate(neg_masks_batch,size=(map_res, map_res),mode='nearest').view(batch_size,num_tokens,-1).permute(0,2,1)
             # neg_masks_batch=torch.repeat_interleave(neg_masks_batch,num_heads,dim=0)
+            neg_masks_batch=neg_masks_batch.repeat(num_heads,1,1)
             # SINGLEBATCH
 
 
@@ -295,12 +297,12 @@ class AttendExciteAttnProcessor:
                 min_value=cond_scores.min(-1)[0].unsqueeze(-1).repeat(1,1,num_tokens)
                 max_value=cond_scores.max(-1)[0].unsqueeze(-1).repeat(1,1,num_tokens)
                 offset_pos=max_value-cond_scores
-                # offset_neg=cond_scores-min_value 
+                offset_neg=cond_scores-min_value 
                 # Update scores
                 if treg_pos:
                     cond_scores=cond_scores+((offset_pos*(pos_masks_batch>0))*(treg_pos))
                     # cond_scores=cond_scores-(offset_neg*(~(pos_masks_batch>0))*(treg))
-                    # cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg))
+                    cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg_neg))
                 # if treg_neg:
                 #     cond_scores=cond_scores-(offset_neg*((neg_masks_batch>0))*(treg_neg))
                 attention_scores[(batch_size*num_heads):]=cond_scores
